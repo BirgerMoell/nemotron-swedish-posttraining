@@ -1,0 +1,39 @@
+{
+  "run_name": "s2-nemotron3-30b-a3b-post-lora-sv-smoke",
+  "model": {
+    "repo_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16",
+    "revision": "bf77c3174f68ad409e1c2aa60daeb46e32d1c606",
+    "purpose": "FSDP and ROCm compatibility smoke for Swedish continuation from the post-trained checkpoint"
+  },
+  "data": {
+    "repo_id": "AI-Sweden-Models/Dolci-Instruct-SFT-translated",
+    "revision": "e89e3c9f1385f2656fa0a5bed97b45193cfadcbf",
+    "split": "train",
+    "examples": 64,
+    "seed": 20260918,
+    "shuffle_buffer": 10000
+  },
+  "training": {
+    "seed": 20260918,
+    "expected_world_size": 8,
+    "max_length": 128,
+    "accepted_examples": 8,
+    "max_steps": 1,
+    "min_masked_prompt_tokens": 16,
+    "min_supervised_tokens": 16,
+    "learning_rate": 0.0001,
+    "weight_decay": 0.0,
+    "grad_clip": 1.0,
+    "lora_r": 8,
+    "lora_alpha": 16,
+    "lora_dropout": 0.0,
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "in_proj",
+      "out_proj"
+    ]
+  }
+}

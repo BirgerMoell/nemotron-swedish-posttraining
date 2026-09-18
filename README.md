@@ -7,11 +7,12 @@ The repository deliberately has two lanes:
 1. **Compatibility lane on LUMI:** Hugging Face Transformers + PEFT on AMD MI250X. This proves that Nemotron-H can load through its PyTorch fallback, the Swedish chat data is masked correctly, gradients flow, and a LoRA adapter plus run manifest can be saved.
 2. **Reference lane:** NVIDIA NeMo/Megatron Bridge recipes on NVIDIA hardware. This is the conformance target for larger SFT and later distillation/RL experiments.
 
-The first LUMI job uses `nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16` and 64 pinned examples from `AI-Sweden-Models/Dolci-Instruct-SFT-translated`. The 4B model is already instruction-tuned and English-oriented, so this job is a **systems smoke test, not a Swedish-quality result**. The first scientifically meaningful SFT candidate is the 30B-A3B base checkpoint.
+The first LUMI job uses `nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16` and 64 pinned examples from `AI-Sweden-Models/Dolci-Instruct-SFT-translated`. The 4B model is already instruction-tuned and English-oriented, so this job is a **systems smoke test, not a Swedish-quality result**. The target continuation checkpoint is the post-trained `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16`; keeping its existing alignment is preferable to rebuilding instruction following from the base checkpoint.
 
 ## Repository map
 
 - `docs/experiment-plan.md` — hypotheses, stage gates, evaluation and scale-up plan
+- `docs/30b-posttrained-experiment.md` — specific 30B-A3B continuation and ablation plan
 - `docs/data-sources.md` — source-by-source recommendation and licensing notes
 - `docs/lumi-runbook.md` — staging, submission, monitoring and recovery
 - `data/sources.yaml` — machine-readable source registry
@@ -28,8 +29,8 @@ The first LUMI job uses `nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16` and 64 pinned ex
 |---|---|---|---|
 | S0 | Nemotron 3 Nano 4B BF16 | 64 Swedish Dolci rows | ROCm/custom-code/LoRA plumbing |
 | S1 | Nemotron 3 Nano 4B BF16 | 5k Swedish mixture | data and loss sanity; no capability claim |
-| S2 | Nemotron 3 Nano 30B-A3B Base BF16 | 1k rows | base-model FSDP compatibility |
-| P1 | Nemotron 3 Nano 30B-A3B Base BF16 | 100k controlled mixture | first measured Swedish SFT pilot |
+| S2 | Nemotron 3 Nano 30B-A3B post-trained BF16 | 8 Swedish rows | post-trained-model FSDP compatibility |
+| P30 | same | 100k controlled mixture | first measured 30B Swedish SFT pilot |
 | P2 | same | 500k–1M quality-filtered mixture | scale only after P1 gates pass |
 
 See [the experiment plan](docs/experiment-plan.md) for stop/go criteria.
@@ -58,4 +59,4 @@ python3 -m compileall -q scripts tests
 - [x] Pinned S0 configuration and LUMI launch path
 - [x] S0 LUMI result attached under `docs/runs/` — job `22150463`, PASS
 - [ ] P1 Swedish capability run — queued as jobs `22151051` → `22151052` → `22151053`
-- [ ] 30B-A3B base-model baseline and S2 run
+- [ ] 30B-A3B post-trained baseline and S2 FSDP smoke

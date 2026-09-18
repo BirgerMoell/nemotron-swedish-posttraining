@@ -12,9 +12,19 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+from typing import Any
 
 
-ORIGINAL_SHA256 = "ea982af0b805f181573f919ecb001d5bbc0153459923cf4b2f1ccae194e415a4"
+# NVIDIA currently publishes the same guarded import block in both pinned
+# checkpoints used by this repository.  Keep every accepted source hash
+# explicit: a new upstream implementation must be reviewed rather than being
+# modified by a fuzzy patch.
+ORIGINAL_SHA256S = {
+    # NVIDIA-Nemotron-3-Nano-4B-BF16@dfaf35d
+    "ea982af0b805f181573f919ecb001d5bbc0153459923cf4b2f1ccae194e415a4",
+    # NVIDIA-Nemotron-3-Nano-30B-A3B-BF16@bf77c31
+    "4d353ce6e8f495d043f2d8c5acd13496a84ba2b2d45da8279797a55f680309d9",
+}
 PATCH_MARKER = "nemotron-swedish-posttraining: pure PyTorch ROCm RMSNorm fallback"
 
 UPSTREAM_BLOCK = """try:
@@ -52,7 +62,7 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def patch_model(model_dir: Path) -> dict[str, str]:
+def patch_model(model_dir: Path) -> dict[str, Any]:
     target = model_dir / "modeling_nemotron_h.py"
     before = sha256(target)
     text = target.read_text(encoding="utf-8")
@@ -60,13 +70,14 @@ def patch_model(model_dir: Path) -> dict[str, str]:
     if PATCH_MARKER in text:
         return {
             "status": "already_patched",
-            "original_sha256": ORIGINAL_SHA256,
+            "accepted_original_sha256s": sorted(ORIGINAL_SHA256S),
             "patched_sha256": before,
             "path": str(target),
         }
-    if before != ORIGINAL_SHA256:
+    if before not in ORIGINAL_SHA256S:
         raise RuntimeError(
-            f"refusing to patch unexpected source {before}; expected {ORIGINAL_SHA256}"
+            f"refusing to patch unexpected source {before}; "
+            f"expected one of {sorted(ORIGINAL_SHA256S)}"
         )
     if text.count(UPSTREAM_BLOCK) != 1:
         raise RuntimeError("expected exactly one upstream RMSNorm import block")
@@ -90,4 +101,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

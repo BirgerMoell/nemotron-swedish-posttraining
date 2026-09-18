@@ -2,11 +2,11 @@
 
 ## Objective
 
-Produce a Swedish-capable Nemotron 3 checkpoint without sacrificing core English instruction following, reasoning, or format compliance. The first decision is whether supervised Swedish adaptation of the 30B-A3B **base** model is viable. Preference optimization and on-policy distillation come only after that question is answered.
+Produce a Swedish-capable Nemotron 3 checkpoint without sacrificing core English instruction following, reasoning, or format compliance. Continue from the 30B-A3B **post-trained** BF16 checkpoint so the experiment adapts an existing instruction model rather than rebuilding alignment from the base checkpoint. Preference optimization and on-policy distillation come only after supervised adaptation is measured.
 
 ## Hypotheses
 
-- **H1:** A quality-controlled Swedish SFT mixture materially improves native Swedish reasoning and instruction following over the 30B-A3B base model.
+- **H1:** A quality-controlled Swedish SFT mixture materially improves native Swedish reasoning and instruction following over the untouched 30B-A3B post-trained model.
 - **H2:** Keeping 10–20% English replay prevents material English regression.
 - **H3:** Human-authored Swedish anchors and post-editing improve exact instruction/answer-format compliance more than adding raw translated volume.
 - **H4:** Reasoning traces may remain English in the first pilot, but the final answer must follow the requested language and schema.
@@ -37,12 +37,12 @@ Run manifests record which lane produced every artifact.
 - Inspect 100 sampled generations and 100 masked training records
 - Pass: no template corruption; at least 99.5% valid rows; Swedish final-answer rate at least 95%; no NaN/OOM
 
-### S2 — target-base compatibility
+### S2 — target checkpoint compatibility
 
-- Model: `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-Base-BF16`
-- One node, FSDP across eight MI250X GCDs, 1k examples, 10 updates
-- Explicitly import and pin the chat template; the base model must not silently inherit a changing template
-- Pass: same systems gates as S0 plus a load/save/reload equality probe for adapter weights
+- Model: `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16`
+- One node, FSDP across eight MI250X GCDs, eight examples, one update
+- Use the checkpoint's pinned chat template and verify the assistant-only boundary
+- Pass: same systems gates as S0 plus an adapter-only safetensors/config serialization check
 
 ### P1 — measured 100k pilot
 

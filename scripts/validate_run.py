@@ -34,6 +34,18 @@ def main() -> None:
     adapter = args.run_dir / "adapter" / "adapter_model.safetensors"
     if not adapter.is_file() or adapter.stat().st_size == 0:
         failures.append("adapter_model.safetensors is missing or empty")
+    else:
+        try:
+            from safetensors import safe_open
+
+            with safe_open(adapter, framework="pt", device="cpu") as handle:
+                adapter_keys = list(handle.keys())
+            if not adapter_keys or not all("lora_" in key for key in adapter_keys):
+                failures.append("saved artifact is not an adapter-only LoRA state dict")
+        except Exception as exc:  # validation should report, not hide, serialization failures
+            failures.append(f"adapter safetensors could not be inspected: {exc}")
+    if not (args.run_dir / "adapter" / "adapter_config.json").is_file():
+        failures.append("adapter_config.json is missing")
     if manifest.get("model", {}).get("use_mamba_kernels") is not False:
         failures.append("ROCm smoke did not record PyTorch Mamba fallback")
     if manifest.get("repository_commit") in {None, "", "unknown"}:

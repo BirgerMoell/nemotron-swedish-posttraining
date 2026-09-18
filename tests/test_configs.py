@@ -7,6 +7,15 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ConfigTest(unittest.TestCase):
+    def test_30b_smoke_is_one_step_across_eight_fsdp_ranks(self):
+        config = json.loads((ROOT / "configs/lumi-s2-30b-post-smoke.json").read_text())
+        training = config["training"]
+        self.assertEqual(config["model"]["repo_id"], "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16")
+        self.assertEqual(training["expected_world_size"], 8)
+        self.assertEqual(training["accepted_examples"], training["max_steps"] * 8)
+        self.assertNotIn("up_proj", training["target_modules"])
+        self.assertNotIn("down_proj", training["target_modules"])
+
     def test_s1_global_example_count_matches_eight_rank_steps(self):
         config = json.loads((ROOT / "configs/lumi-s1-5k.json").read_text())
         training = config["training"]

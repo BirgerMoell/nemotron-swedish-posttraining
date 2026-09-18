@@ -48,3 +48,20 @@ The job runs fully offline. Success requires `runs/<job-id>/validation.json` wit
 ## Promote to S1
 
 Only after S0 passes, create a new immutable config. Do not mutate `lumi-smoke.json`. S1 should add an explicit generation probe, a 100-row masking audit, source-stratified sampling and a baseline comparison.
+
+## 30B-A3B post-trained FSDP smoke
+
+The 30B checkpoint is a separate lane and does not replace or modify the 4B
+jobs. Its estimate and allocation ceiling are recorded before submission in
+`docs/runs/lumi-s2-30b-post-smoke-budget.md`.
+
+```bash
+cd /scratch/project_465002530/users/bmoell/nemotron-swedish-posttraining
+bash lumi/stage_30b_smoke.sh
+bash lumi/submit_30b_smoke.sh
+```
+
+Staging downloads the pinned 63 GB BF16 checkpoint on a login node. The smoke
+then uses all eight GCDs on one node with `FULL_SHARD`; only global rank zero
+loads the CPU checkpoint, avoiding eight full host-memory copies. The 30-minute
+allocation has a hard ceiling of 4 GPU-hours.
