@@ -19,6 +19,12 @@ bash lumi/stage_assets.sh
 
 This downloads the exact model revision to scratch, streams a deterministic 64-row sample from the exact dataset revision, validates message structure and writes a staging manifest plus SHA-256.
 
+The pinned NVIDIA remote-code file guards its Mamba fast kernels but imports a
+Triton gated-RMSNorm helper unconditionally. Staging therefore applies an
+exact-SHA-guarded, autograd-safe PyTorch implementation of that one operation.
+Both original and patched code hashes are written to the staging/run manifests;
+any upstream source change makes staging fail instead of applying a fuzzy patch.
+
 ## Submit and inspect
 
 ```bash
@@ -33,7 +39,7 @@ The job runs fully offline. Success requires `runs/<job-id>/validation.json` wit
 ## Failure triage
 
 - Missing files: rerun staging on the login node; never allow the compute job to fetch.
-- CUDA-only Mamba error: confirm the resolved config has `use_mamba_kernels=false`; the smoke intentionally tests the PyTorch fallback.
+- CUDA-only Mamba error: confirm the resolved config has `use_mamba_kernels=false`, the staging manifest records the RMSNorm compatibility patch, and the job uses a fresh `HF_MODULES_CACHE`.
 - Unsupported attention backend: keep `attn_implementation=eager` for S0.
 - OOM: confirm one process was launched, sequence length is 256 and only listed projection modules are trainable.
 - Template-prefix failure: preserve the failing row and template; do not fall back to training on user tokens.
@@ -42,4 +48,3 @@ The job runs fully offline. Success requires `runs/<job-id>/validation.json` wit
 ## Promote to S1
 
 Only after S0 passes, create a new immutable config. Do not mutate `lumi-smoke.json`. S1 should add an explicit generation probe, a 100-row masking audit, source-stratified sampling and a baseline comparison.
-

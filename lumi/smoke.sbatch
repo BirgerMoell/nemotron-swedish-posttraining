@@ -31,14 +31,15 @@ mkdir -p "$RUN_DIR"
 
 export CONTAINER REPO_COMMIT
 export HF_HOME="$HF_CACHE" HF_DATASETS_CACHE="$HF_CACHE/datasets"
+export HF_MODULES_CACHE="$RUN_DIR/hf_modules"
 export HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1
 export TOKENIZERS_PARALLELISM=false
-export PYTORCH_HIP_ALLOC_CONF=expandable_segments:True
-export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+export PYTORCH_ALLOC_CONF=expandable_segments:True
 export OMP_NUM_THREADS=7
 
 echo "run=$SLURM_JOB_ID commit=$REPO_COMMIT host=$(hostname) started=$(date --iso-8601=seconds)"
 srun --label --gpu-bind=closest singularity exec -B "$BIND" "$CONTAINER" bash -lc "
+  set -euo pipefail
   cd '$REPO_ROOT'
   python scripts/train_lora_smoke.py \
     --config configs/lumi-smoke.json \
@@ -48,4 +49,3 @@ srun --label --gpu-bind=closest singularity exec -B "$BIND" "$CONTAINER" bash -l
   python scripts/validate_run.py '$RUN_DIR'
 "
 echo "completed=$(date --iso-8601=seconds) run_dir=$RUN_DIR"
-

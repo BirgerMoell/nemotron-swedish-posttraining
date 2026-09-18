@@ -17,6 +17,7 @@ The first LUMI job uses `nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16` and 64 pinned ex
 - `data/sources.yaml` — machine-readable source registry
 - `configs/lumi-smoke.json` — immutable first-run configuration
 - `scripts/stage_assets.py` — stages the model and a deterministic Swedish sample
+- `scripts/patch_nemotron_rocm.py` — exact-SHA-guarded PyTorch RMSNorm fallback
 - `scripts/train_lora_smoke.py` — two-step, assistant-only LoRA smoke trainer
 - `scripts/validate_run.py` — fail-closed artifact validation
 - `lumi/` — LUMI staging and Slurm launchers
@@ -58,4 +59,3 @@ python3 -m compileall -q scripts tests
 - [ ] S0 LUMI result attached under `docs/runs/`
 - [ ] S1 data-quality report
 - [ ] 30B-A3B base-model baseline and S2 run
-

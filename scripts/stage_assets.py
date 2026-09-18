@@ -79,6 +79,7 @@ def main() -> None:
 
     from datasets import load_dataset
     from huggingface_hub import snapshot_download
+    from patch_nemotron_rocm import patch_model
 
     model_dir = args.asset_root / "models" / model_cfg["repo_id"].replace("/", "--")
     data_path = args.asset_root / "data" / f'{config["run_name"]}.jsonl'
@@ -89,6 +90,7 @@ def main() -> None:
         revision=model_cfg["revision"],
         local_dir=model_dir,
     )
+    compatibility_patch = patch_model(model_dir)
 
     stream = load_dataset(
         data_cfg["repo_id"],
@@ -112,6 +114,7 @@ def main() -> None:
             "repo_id": model_cfg["repo_id"],
             "revision": model_cfg["revision"],
             "local_dir": str(model_dir),
+            "compatibility_patch": compatibility_patch,
         },
         "data": {
             "repo_id": data_cfg["repo_id"],

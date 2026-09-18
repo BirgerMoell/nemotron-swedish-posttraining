@@ -235,6 +235,7 @@ def main() -> None:
             "path": str(args.model_dir),
             "use_mamba_kernels": False,
             "attention_implementation": "eager",
+            "modeling_code_sha256": file_sha256(args.model_dir / "modeling_nemotron_h.py"),
         },
         "data": {
             "repo_id": config["data"]["repo_id"],
@@ -272,4 +273,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
