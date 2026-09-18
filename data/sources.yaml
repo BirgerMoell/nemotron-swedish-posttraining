@@ -1,0 +1,119 @@
+schema_version: 1
+reviewed: 2026-09-18
+sources:
+  - id: aisweden_dolci_sv
+    uri: https://huggingface.co/datasets/AI-Sweden-Models/Dolci-Instruct-SFT-translated
+    kind: sft
+    language: sv-SE
+    size: 494841
+    license: Apache-2.0
+    provenance: machine translation with Gemma 3 27B-IT; code preserved
+    decision: approved_primary
+    use: primary Swedish SFT and all smoke runs
+
+  - id: aya_human
+    uri: https://huggingface.co/datasets/CohereLabs/aya_dataset
+    kind: sft
+    language: multilingual-including-swedish
+    size: 204000
+    license: Apache-2.0
+    provenance: human original annotations and human re-annotations
+    decision: approved_secondary
+    use: Swedish human-authored anchor; retain annotation_type metadata
+
+  - id: aya_collection
+    uri: https://huggingface.co/datasets/CohereLabs/aya_collection
+    kind: sft
+    language: multilingual-including-swedish
+    license: Apache-2.0
+    provenance: templated and translated collection from many upstream datasets
+    decision: conditional
+    use: select source-specific Swedish rows only; deduplicate and audit templates
+
+  - id: nemotron_sft_v3
+    uri: https://huggingface.co/datasets/nvidia/Nemotron-SFT-Instruction-Following-Chat-v3
+    kind: sft
+    language: en
+    size: 887000
+    license: CC-BY-4.0-and-ODC-By
+    provenance: NVIDIA chat and instruction-following release
+    decision: approved_with_transform
+    use: English replay plus a translated/post-edited instruction-following slice
+    note: train only the last assistant turn for chat rows; some prompts require gated restoration
+
+  - id: nemotron_posttraining_v2
+    uri: https://huggingface.co/datasets/nvidia/Nemotron-Post-Training-Dataset-v2
+    kind: sft
+    language: multilingual-no-swedish-target
+    license: per-sample-mixed
+    provenance: NVIDIA post-training mixture
+    decision: conditional
+    use: shape/volume reference and filtered English replay; preserve per-sample licenses
+
+  - id: swe_sat
+    uri: https://huggingface.co/datasets/AI-Sweden-Models/SweSAT-1.0
+    kind: evaluation
+    language: sv-SE
+    size: 867
+    license: check-dataset-card-before-redistribution
+    decision: evaluation_only
+    use: held-out native Swedish reasoning; never train
+
+  - id: superlim
+    uri: https://huggingface.co/datasets/SuperLim
+    kind: evaluation
+    language: sv
+    license: task-specific
+    decision: evaluation_only
+    use: native Swedish NLU suite; inspect each task license
+
+  - id: wmt24pp_en_sv
+    uri: https://huggingface.co/datasets/google/wmt24pp
+    kind: evaluation
+    language: en-sv_SE
+    license: task-specific
+    decision: evaluation_only
+    use: translation quality and regression tracking; never train
+
+  - id: bactrian_x_sv
+    uri: https://huggingface.co/datasets/MBZUAI/Bactrian-X
+    kind: sft
+    language: sv
+    size: 67017
+    license: CC-BY-NC-4.0
+    decision: excluded_release
+    use: research diagnostic only if non-commercial terms are explicitly accepted
+
+  - id: oasst2
+    uri: https://huggingface.co/datasets/OpenAssistant/oasst2
+    kind: sft
+    language: multilingual
+    license: Apache-2.0
+    decision: excluded_low_yield
+    use: not enough Swedish data to justify pipeline complexity
+
+  - id: opus100_en_sv
+    uri: https://huggingface.co/datasets/Helsinki-NLP/opus-100
+    kind: parallel_text
+    language: en-sv
+    license: unresolved-at-aggregate-level
+    decision: hold_legal
+    use: only after resolving licenses of the contributing OPUS corpora
+
+  - id: magpie_sv
+    uri: https://huggingface.co/datasets/nicher92/magpie_llama70b_200k_filtered_swedish
+    kind: sft
+    language: sv
+    size: 210000
+    license: llama-3.3-community
+    decision: hold_legal_quality
+    use: optional ablation after license and duplication review
+
+  - id: scandi_translated_instruct
+    uri: https://huggingface.co/datasets/V4ldeLund/scandi-translated-instruct
+    kind: sft
+    language: nordic
+    license: other
+    decision: excluded_unresolved_provenance
+    use: none until license and upstream provenance are made explicit
+

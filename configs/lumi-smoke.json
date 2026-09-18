@@ -1,0 +1,36 @@
+{
+  "run_name": "s0-nemotron3-4b-lora-sv",
+  "model": {
+    "repo_id": "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16",
+    "revision": "dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f",
+    "purpose": "ROCm plumbing only; this checkpoint is already post-trained"
+  },
+  "data": {
+    "repo_id": "AI-Sweden-Models/Dolci-Instruct-SFT-translated",
+    "revision": "e89e3c9f1385f2656fa0a5bed97b45193cfadcbf",
+    "split": "train",
+    "examples": 64,
+    "seed": 20260918,
+    "shuffle_buffer": 10000
+  },
+  "training": {
+    "seed": 20260918,
+    "max_length": 256,
+    "max_steps": 2,
+    "learning_rate": 0.0002,
+    "weight_decay": 0.0,
+    "grad_clip": 1.0,
+    "lora_r": 8,
+    "lora_alpha": 16,
+    "lora_dropout": 0.0,
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "up_proj",
+      "down_proj"
+    ]
+  }
+}
+
