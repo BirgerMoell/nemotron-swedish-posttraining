@@ -51,7 +51,8 @@ sources:
     use: shape/volume reference and filtered English replay; preserve per-sample licenses
 
   - id: swe_sat
-    uri: https://huggingface.co/datasets/AI-Sweden-Models/SweSAT-1.0
+    uri: https://huggingface.co/datasets/AI-Sweden/SuperLim
+    config: swesat
     kind: evaluation
     language: sv-SE
     size: 867
@@ -60,7 +61,7 @@ sources:
     use: held-out native Swedish reasoning; never train
 
   - id: superlim
-    uri: https://huggingface.co/datasets/SuperLim
+    uri: https://huggingface.co/datasets/sbx/superlim-2
     kind: evaluation
     language: sv
     license: task-specific
@@ -116,4 +117,3 @@ sources:
     license: other
     decision: excluded_unresolved_provenance
     use: none until license and upstream provenance are made explicit
-
