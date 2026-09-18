@@ -57,5 +57,5 @@ python3 -m compileall -q scripts tests
 - [x] Source registry and staged experiment plan
 - [x] Pinned S0 configuration and LUMI launch path
 - [x] S0 LUMI result attached under `docs/runs/` — job `22150463`, PASS
-- [ ] S1 data-quality report
+- [ ] P1 Swedish capability run — queued as jobs `22151051` → `22151052` → `22151053`
 - [ ] 30B-A3B base-model baseline and S2 run
