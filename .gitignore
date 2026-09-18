@@ -3,10 +3,10 @@ __pycache__/
 .DS_Store
 .venv/
 .pytest_cache/
-data/smoke/
-assets/
-logs/
-runs/
+/data/smoke/
+/assets/
+/logs/
+/runs/
 *.out
 *.err
 core

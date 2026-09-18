@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "status": "complete",
+  "lane": "lumi-rocm-transformers-peft",
+  "run_name": "s0-nemotron3-4b-lora-sv",
+  "repository_commit": "fc93f81c9671e8d3bd9014f6f452183e4b7fbb55",
+  "slurm": {
+    "job_id": "22150463",
+    "job_name": "nemotron-sv-s0",
+    "node_list": "nid005001",
+    "state": "COMPLETED",
+    "elapsed": "00:01:33",
+    "exit_code": "0:0"
+  },
+  "model": {
+    "repo_id": "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16",
+    "revision": "dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f",
+    "use_mamba_kernels": false,
+    "attention_implementation": "eager",
+    "modeling_code_sha256": "097d41e709bd685b0bbc178a8751f04a8ab6d5f62310b9b9d9b66879ed66410a"
+  },
+  "data": {
+    "repo_id": "AI-Sweden-Models/Dolci-Instruct-SFT-translated",
+    "revision": "e89e3c9f1385f2656fa0a5bed97b45193cfadcbf",
+    "sha256": "5c7b9ef1f919fdfef1f25738dc3981fb88200f48269817965ef2e4eda6ab838d",
+    "records": 64,
+    "assistant_only": "final-assistant-turn"
+  },
+  "training": {
+    "seed": 20260918,
+    "max_length": 256,
+    "max_steps": 2,
+    "min_masked_prompt_tokens": 16,
+    "learning_rate": 0.0002,
+    "lora_r": 8,
+    "lora_alpha": 16,
+    "target_modules": ["q_proj", "k_proj", "v_proj", "o_proj", "up_proj", "down_proj"]
+  },
+  "metrics": {
+    "losses": [8.906970024108887, 8.670028686523438],
+    "gradient_norms": [6.465034484863281, 6.929615497589111],
+    "supervised_token_counts": [234, 234],
+    "masked_prompt_token_counts": [22, 22],
+    "elapsed_seconds": 14.623073816299438,
+    "peak_gpu_memory_bytes": 19119140352,
+    "trainable_parameters": 5059584,
+    "total_parameters": 3978616416
+  },
+  "artifact": {
+    "adapter_size": "20M",
+    "adapter_sha256": "cc7968ac4624f709a63bf9eaaf8ddfbae24be5c8ee82baeeb36cc820528ea3c7"
+  },
+  "environment": {
+    "python": "3.12.3",
+    "torch": "2.9.1+rocm6.4",
+    "hip": "6.4.43484-123eb5128",
+    "transformers": "4.57.3",
+    "peft": "0.18.1",
+    "gpu": "AMD Instinct MI250X"
+  }
+}
