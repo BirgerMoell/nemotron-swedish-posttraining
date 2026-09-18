@@ -45,3 +45,8 @@ submitted automatically.
 - `adapter/adapter_model.safetensors`, `run_manifest.json` and
   `validation.json` are present;
 - validation reports `status: pass`.
+
+Attempt `22157409` used this original configuration and failed at the token
+window gate after 89 seconds. See `lumi-s2-30b-post-smoke-22157409.md`; the
+corrective rerun has its own pre-submission estimate in
+`lumi-s2-30b-post-smoke-rerun-budget.md`.

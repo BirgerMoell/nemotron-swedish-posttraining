@@ -13,6 +13,8 @@ class ConfigTest(unittest.TestCase):
         self.assertEqual(config["model"]["repo_id"], "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16")
         self.assertEqual(training["expected_world_size"], 8)
         self.assertEqual(training["accepted_examples"], training["max_steps"] * 8)
+        self.assertTrue(training["data_prevalidated"])
+        self.assertEqual(training["max_length"], 256)
         self.assertNotIn("up_proj", training["target_modules"])
         self.assertNotIn("down_proj", training["target_modules"])
 

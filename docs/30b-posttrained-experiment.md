@@ -12,7 +12,7 @@ from training.
 
 | Gate | Scale | Question | Promotion criterion |
 |---|---:|---|---|
-| S2 | 8 rows, 1 step | Does the 30B hybrid MoE train and save under ROCm/FSDP? | All systems gates pass |
+| S2 | 8 qualified rows, 1 step | Does the 30B hybrid MoE train and save under ROCm/FSDP? | All systems gates pass |
 | S3 | 1,024 rows, 16–32 steps | Is loss stable and is Swedish generation directionally improved? | No format collapse; positive paired Swedish probe |
 | E0 | no training | What are the untouched Swedish and English baselines? | Frozen predictions and scores published |
 | P30-A | 100k rows | Does attention/Mamba LoRA improve Swedish while retaining English? | Swedish aggregate gain; retention gates pass |

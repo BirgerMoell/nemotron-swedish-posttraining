@@ -9,14 +9,15 @@
     "repo_id": "AI-Sweden-Models/Dolci-Instruct-SFT-translated",
     "revision": "e89e3c9f1385f2656fa0a5bed97b45193cfadcbf",
     "split": "train",
-    "examples": 64,
+    "examples": 1024,
     "seed": 20260918,
     "shuffle_buffer": 10000
   },
   "training": {
     "seed": 20260918,
     "expected_world_size": 8,
-    "max_length": 128,
+    "max_length": 256,
+    "data_prevalidated": true,
     "accepted_examples": 8,
     "max_steps": 1,
     "min_masked_prompt_tokens": 16,
