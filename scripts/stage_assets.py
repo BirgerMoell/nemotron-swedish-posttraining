@@ -6,6 +6,8 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
+import sys
 from itertools import islice
 from pathlib import Path
 from typing import Any, Iterable
@@ -128,4 +130,10 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
+    # The pinned LUMI container can abort while finalizing PyArrow's background
+    # filesystem thread after a streaming dataset has already closed. Reaching
+    # this point means all downloads, validation, hashes and manifest writes
+    # succeeded; bypass only interpreter finalizers, without masking exceptions.
+    sys.stdout.flush()
+    sys.stderr.flush()
+    os._exit(0)
