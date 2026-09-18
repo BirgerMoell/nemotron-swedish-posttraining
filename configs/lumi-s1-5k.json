@@ -1,0 +1,39 @@
+{
+  "run_name": "s1-nemotron3-4b-lora-sv-5k",
+  "model": {
+    "repo_id": "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16",
+    "revision": "dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f",
+    "purpose": "first non-smoke Swedish SFT data run; model is already post-trained"
+  },
+  "data": {
+    "repo_id": "AI-Sweden-Models/Dolci-Instruct-SFT-translated",
+    "revision": "e89e3c9f1385f2656fa0a5bed97b45193cfadcbf",
+    "split": "train",
+    "examples": 20000,
+    "seed": 20260919,
+    "shuffle_buffer": 50000
+  },
+  "training": {
+    "seed": 20260919,
+    "max_length": 256,
+    "accepted_examples": 5120,
+    "max_steps": 640,
+    "min_masked_prompt_tokens": 16,
+    "min_supervised_tokens": 32,
+    "learning_rate": 0.0002,
+    "weight_decay": 0.0,
+    "grad_clip": 1.0,
+    "lora_r": 8,
+    "lora_alpha": 16,
+    "lora_dropout": 0.0,
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "up_proj",
+      "down_proj"
+    ]
+  }
+}
+

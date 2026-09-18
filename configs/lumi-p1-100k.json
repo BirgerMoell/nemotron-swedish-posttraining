@@ -1,0 +1,45 @@
+{
+  "run_name": "p1-nemotron3-4b-lora-sv-100k",
+  "model": {
+    "repo_id": "nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16",
+    "revision": "dfaf35de3e30f1867dd8dbc38a7fc9fb52d3914f",
+    "purpose": "Swedish capability specialization of the post-trained Nemotron 3 Nano 4B"
+  },
+  "data": {
+    "repo_id": "AI-Sweden-Models/Dolci-Instruct-SFT-translated",
+    "revision": "e89e3c9f1385f2656fa0a5bed97b45193cfadcbf",
+    "split": "train",
+    "examples": 300000,
+    "seed": 20260920,
+    "shuffle_buffer": 100000
+  },
+  "training": {
+    "seed": 20260920,
+    "expected_world_size": 64,
+    "max_length": 512,
+    "data_prevalidated": true,
+    "accepted_examples": 100032,
+    "max_steps": 1563,
+    "min_masked_prompt_tokens": 32,
+    "min_supervised_tokens": 64,
+    "learning_rate": 0.0001,
+    "lr_scheduler": "cosine",
+    "warmup_steps": 50,
+    "checkpoint_every_steps": 250,
+    "weight_decay": 0.0,
+    "grad_clip": 1.0,
+    "lora_r": 16,
+    "lora_alpha": 32,
+    "lora_dropout": 0.0,
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "up_proj",
+      "down_proj",
+      "in_proj",
+      "out_proj"
+    ]
+  }
+}
