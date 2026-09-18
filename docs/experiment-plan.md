@@ -27,7 +27,7 @@ Run manifests record which lane produced every artifact.
 - Model: Nemotron 3 Nano 4B BF16, immutable revision in `configs/lumi-smoke.json`
 - Data: 64 deterministic Swedish Dolci conversations
 - Update: LoRA rank 8, two optimizer steps, sequence length 256
-- Pass: finite loss on both steps, non-zero finite gradient norm, adapter saved, resolved manifest validates
+- Pass: finite loss on both steps, non-zero finite gradient norm, at least 16 masked prompt tokens remain in every training window, adapter saved, resolved manifest validates
 - Interpretation: plumbing only; no quality claim
 
 ### S1 — data/loss smoke
@@ -107,4 +107,3 @@ MMLU-ProX is not used as a Swedish metric: its `sw` identifier is Swahili, not S
 ## Reproducibility contract
 
 Every run records model and dataset commit SHA, repository commit, container path/hash, package versions, Slurm job/allocation, visible GPU, seeds, resolved config, input JSONL SHA-256, loss trace and saved-artifact hashes. A missing field fails validation rather than being filled by guesswork.
-

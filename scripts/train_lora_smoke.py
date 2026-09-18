@@ -164,14 +164,26 @@ def main() -> None:
     records = load_records(args.data)
     losses: list[float] = []
     grad_norms: list[float] = []
+    supervised_token_counts: list[int] = []
+    masked_prompt_token_counts: list[int] = []
     started = time.time()
 
     optimizer.zero_grad(set_to_none=True)
+    record_index = 0
     for step in range(int(train_cfg["max_steps"])):
-        record = records[step % len(records)]
-        input_ids, labels = build_training_example(
-            tokenizer, record, int(train_cfg["max_length"])
-        )
+        for _ in range(len(records)):
+            record = records[record_index % len(records)]
+            record_index += 1
+            input_ids, labels = build_training_example(
+                tokenizer, record, int(train_cfg["max_length"])
+            )
+            masked_tokens = int((labels == -100).sum())
+            if masked_tokens >= int(train_cfg["min_masked_prompt_tokens"]):
+                break
+        else:
+            raise RuntimeError(
+                "no record retained enough masked prompt tokens to test assistant-only loss"
+            )
         input_ids = input_ids.to("cuda")
         labels = labels.to("cuda")
         attention_mask = torch.ones_like(input_ids)
@@ -195,13 +207,16 @@ def main() -> None:
         optimizer.zero_grad(set_to_none=True)
         losses.append(float(loss.detach().cpu()))
         grad_norms.append(float(grad_norm.detach().cpu()))
+        supervised_token_counts.append(int((labels != -100).sum()))
+        masked_prompt_token_counts.append(int((labels == -100).sum()))
         print(
             json.dumps(
                 {
                     "step": step + 1,
                     "id": record["id"],
                     "tokens": int(input_ids.numel()),
-                    "supervised_tokens": int((labels != -100).sum()),
+                    "supervised_tokens": supervised_token_counts[-1],
+                    "masked_prompt_tokens": masked_prompt_token_counts[-1],
                     "loss": losses[-1],
                     "grad_norm": grad_norms[-1],
                 },
@@ -249,6 +264,8 @@ def main() -> None:
         "metrics": {
             "losses": losses,
             "gradient_norms": grad_norms,
+            "supervised_token_counts": supervised_token_counts,
+            "masked_prompt_token_counts": masked_prompt_token_counts,
             "elapsed_seconds": time.time() - started,
             "peak_gpu_memory_bytes": torch.cuda.max_memory_allocated(),
             "trainable_parameters": trainable,

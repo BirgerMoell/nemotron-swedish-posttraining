@@ -17,6 +17,7 @@
     "seed": 20260918,
     "max_length": 256,
     "max_steps": 2,
+    "min_masked_prompt_tokens": 16,
     "learning_rate": 0.0002,
     "weight_decay": 0.0,
     "grad_clip": 1.0,
@@ -33,4 +34,3 @@
     ]
   }
 }
-

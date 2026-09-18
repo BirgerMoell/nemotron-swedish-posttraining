@@ -22,11 +22,15 @@ def main() -> None:
         failures.append("manifest status is not complete")
     losses = manifest.get("metrics", {}).get("losses", [])
     gradients = manifest.get("metrics", {}).get("gradient_norms", [])
+    masked_tokens = manifest.get("metrics", {}).get("masked_prompt_token_counts", [])
     expected_steps = int(manifest.get("training", {}).get("max_steps", -1))
+    minimum_masked = int(manifest.get("training", {}).get("min_masked_prompt_tokens", -1))
     if len(losses) != expected_steps or not all(math.isfinite(x) for x in losses):
         failures.append("loss trace is missing or non-finite")
     if len(gradients) != expected_steps or not all(math.isfinite(x) and x > 0 for x in gradients):
         failures.append("gradient trace is missing, zero, or non-finite")
+    if len(masked_tokens) != expected_steps or not all(x >= minimum_masked for x in masked_tokens):
+        failures.append("assistant-only masking boundary was not exercised on every step")
     adapter = args.run_dir / "adapter" / "adapter_model.safetensors"
     if not adapter.is_file() or adapter.stat().st_size == 0:
         failures.append("adapter_model.safetensors is missing or empty")
@@ -51,4 +55,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
