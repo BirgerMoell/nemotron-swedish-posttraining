@@ -221,6 +221,43 @@ def main() -> None:
     # PEFT delegates this in current releases, but pin it explicitly because
     # TRANSFORMER_BASED_WRAP must shard complete Nemotron blocks.
     model._no_split_modules = ["NemotronHBlock"]
+
+    # Nemotron-H deliberately stores router, norm and state-space parameters in
+    # FP32 alongside BF16 projection weights. FSDP1 requires one dtype per
+    # flattened NemotronHBlock. This lane trains only LoRA parameters, so cast
+    # the frozen base storage to BF16 before sharding; forward code still
+    # promotes numerically sensitive router/state operations to FP32.
+    if not bool(train_cfg.get("cast_frozen_parameters_to_bf16", False)):
+        raise RuntimeError("30B FSDP lane requires an explicit frozen-parameter BF16 cast")
+    cast_parameter_names = [
+        name
+        for name, parameter in model.named_parameters()
+        if not parameter.requires_grad and parameter.is_floating_point()
+        and parameter.dtype != torch.bfloat16
+    ]
+    cast_parameter_count = sum(
+        parameter.numel()
+        for parameter in model.parameters()
+        if not parameter.requires_grad
+        and parameter.is_floating_point()
+        and parameter.dtype != torch.bfloat16
+    )
+    model.to(dtype=torch.bfloat16)
+    remaining_dtypes = {
+        str(parameter.dtype) for parameter in model.parameters() if parameter.is_floating_point()
+    }
+    if remaining_dtypes != {"torch.bfloat16"}:
+        raise RuntimeError(f"FSDP parameters still have mixed dtypes: {remaining_dtypes}")
+    if state.is_main_process:
+        print(
+            json.dumps(
+                {
+                    "frozen_parameters_cast_to_bf16": len(cast_parameter_names),
+                    "frozen_parameter_elements_cast_to_bf16": cast_parameter_count,
+                }
+            ),
+            flush=True,
+        )
     trainable = sum(
         parameter.numel() for parameter in model.parameters() if parameter.requires_grad
     )
@@ -320,6 +357,8 @@ def main() -> None:
                 "rank0_only_cpu_checkpoint_load": True,
                 "sync_module_states": True,
                 "use_orig_params": True,
+                "frozen_parameters_cast_to_bf16": len(cast_parameter_names),
+                "frozen_parameter_elements_cast_to_bf16": cast_parameter_count,
             },
             "metrics": {
                 "losses": losses,

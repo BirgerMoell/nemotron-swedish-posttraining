@@ -14,6 +14,7 @@ class ConfigTest(unittest.TestCase):
         self.assertEqual(training["expected_world_size"], 8)
         self.assertEqual(training["accepted_examples"], training["max_steps"] * 8)
         self.assertTrue(training["data_prevalidated"])
+        self.assertTrue(training["cast_frozen_parameters_to_bf16"])
         self.assertEqual(training["max_length"], 256)
         self.assertNotIn("up_proj", training["target_modules"])
         self.assertNotIn("down_proj", training["target_modules"])
