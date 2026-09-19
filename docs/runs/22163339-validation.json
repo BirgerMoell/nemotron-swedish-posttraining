@@ -1,0 +1,6 @@
+{
+  "status": "pass",
+  "manifest": "/pfs/lustrep3/scratch/project_465002530/users/bmoell/nemotron-swedish-posttraining/runs/22163339/run_manifest.json",
+  "adapter": "/pfs/lustrep3/scratch/project_465002530/users/bmoell/nemotron-swedish-posttraining/runs/22163339/adapter/adapter_model.safetensors",
+  "failures": []
+}

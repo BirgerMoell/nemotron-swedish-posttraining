@@ -22,6 +22,10 @@ from training.
 S2 is intentionally too small to change capability. S3 is a debugging run.
 Only P30 is designed as a capability update.
 
+S2 passed on LUMI as job `22163339`: one finite update, non-zero gradient,
+adapter-only serialization and a validated manifest. The complete result is in
+`docs/runs/lumi-s2-30b-post-smoke-22163339.md`.
+
 ## P30 training mixture
 
 Use 100,000 quality-filtered conversations for the first measured pilot:

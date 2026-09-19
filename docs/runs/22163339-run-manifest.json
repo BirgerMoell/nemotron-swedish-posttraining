@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "status": "complete",
+  "lane": "lumi-rocm-transformers-peft-fsdp",
+  "run_name": "s2-nemotron3-30b-a3b-post-lora-sv-smoke",
+  "repository_commit": "1a03ba172f8395951a65a353216b6daa6be1c666",
+  "slurm": {
+    "job_id": "22163339",
+    "job_name": "nemotron-sv-30b-s2",
+    "node_list": "nid007963"
+  },
+  "model": {
+    "repo_id": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16",
+    "revision": "bf77c3174f68ad409e1c2aa60daeb46e32d1c606",
+    "path": "/scratch/project_465002530/users/bmoell/nemotron-swedish-posttraining-assets/models/nvidia--NVIDIA-Nemotron-3-Nano-30B-A3B-BF16",
+    "use_mamba_kernels": false,
+    "attention_implementation": "eager",
+    "modeling_code_sha256": "a480c5d1fbf41ed51c0ec071539c783820072828acb756f2934a4e4bf0b5f564"
+  },
+  "data": {
+    "repo_id": "AI-Sweden-Models/Dolci-Instruct-SFT-translated",
+    "revision": "e89e3c9f1385f2656fa0a5bed97b45193cfadcbf",
+    "path": "/scratch/project_465002530/users/bmoell/nemotron-swedish-posttraining-assets/data/s2-nemotron3-30b-a3b-post-lora-sv-smoke-accepted.jsonl",
+    "sha256": "21c68e283f05d35242cd96f31a0139ec1a76954ee51db8eedaea05fe28ac5f39",
+    "accepted_examples": 8,
+    "accepted_ids_sha256": "b5572853f3c03fd007b9de58277f8adfeeafd2f8e96c086a4eaa87f1e28fb852",
+    "assistant_only": "final-assistant-turn"
+  },
+  "training": {
+    "seed": 20260918,
+    "expected_world_size": 8,
+    "max_length": 256,
+    "data_prevalidated": true,
+    "cast_frozen_parameters_to_bf16": true,
+    "accepted_examples": 8,
+    "max_steps": 1,
+    "min_masked_prompt_tokens": 16,
+    "min_supervised_tokens": 16,
+    "learning_rate": 0.0001,
+    "weight_decay": 0.0,
+    "grad_clip": 1.0,
+    "lora_r": 8,
+    "lora_alpha": 16,
+    "lora_dropout": 0.0,
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "in_proj",
+      "out_proj"
+    ]
+  },
+  "distributed": {
+    "backend": "FSDP FULL_SHARD",
+    "world_size": 8,
+    "rank0_only_cpu_checkpoint_load": true,
+    "sync_module_states": true,
+    "use_orig_params": true,
+    "frozen_parameters_cast_to_bf16": 23,
+    "frozen_parameter_elements_cast_to_bf16": 7913472
+  },
+  "metrics": {
+    "losses": [
+      6.4322
+    ],
+    "gradient_norms": [
+      2.071371555328369
+    ],
+    "masked_prompt_token_counts": [
+      19
+    ],
+    "supervised_token_counts": [
+      202
+    ],
+    "elapsed_seconds": 238.539235830307,
+    "peak_gpu_memory_bytes": 15563992576,
+    "trainable_parameters": 4572672,
+    "total_parameters": 31582510016,
+    "global_batch_size": 8,
+    "trainer_metrics": {
+      "train_runtime": 11.8584,
+      "train_samples_per_second": 0.675,
+      "train_steps_per_second": 0.084,
+      "total_flos": 47969571176448.0,
+      "train_loss": 6.432186126708984,
+      "epoch": 1.0
+    }
+  },
+  "environment": {
+    "container": "/scratch/project_465002530/users/bmoell/containers/laif-rocm-6.4.4-pytorch-2.9.1-te-2.4.0-fa-2.8.0-triton-3.2.0.sif",
+    "python": "3.12.3",
+    "torch": "2.9.1+rocm6.4",
+    "hip": "6.4.43484-123eb5128",
+    "transformers": "4.57.3",
+    "peft": "0.18.1",
+    "gpu": "AMD Instinct MI250X"
+  }
+}

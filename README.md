@@ -58,5 +58,5 @@ python3 -m compileall -q scripts tests
 - [x] Source registry and staged experiment plan
 - [x] Pinned S0 configuration and LUMI launch path
 - [x] S0 LUMI result attached under `docs/runs/` — job `22150463`, PASS
-- [ ] P1 Swedish capability run — queued as jobs `22151051` → `22151052` → `22151053`
-- [ ] 30B-A3B post-trained baseline and S2 FSDP smoke
+- [ ] P1 Swedish capability chain retained as jobs `22151051` → `22151052` → `22151053`; the training dependency is currently unsatisfied after the preparation job failed
+- [x] 30B-A3B post-trained S2 FSDP smoke — job `22163339`, PASS
